@@ -1,0 +1,12 @@
+{
+  "name": "Lookout — 3D Theater Demo",
+  "short_name": "Lookout demo",
+  "description": "A public, read-only demo of Lookout's 3D theater on recorded/synthetic sample data.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#0a0a0f",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

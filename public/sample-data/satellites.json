@@ -1,0 +1,15 @@
+{
+  "note": "Synthetic sample data for the Lookout public demo — not a live feed. See /DEMO_MODE.md.",
+  "satellites": [
+    { "noradId": "25544", "name": "ISS (ZARYA)", "lat": 12.4, "lng": -95.2, "alt": 420, "category": "station", "mission": "Crewed space station", "color": "#00E5FF" },
+    { "noradId": "48274", "name": "STARLINK-2001", "lat": 41.8, "lng": -70.1, "alt": 550, "category": "comms", "mission": "Broadband constellation", "color": "#00E5FF" },
+    { "noradId": "48411", "name": "STARLINK-2118", "lat": -18.3, "lng": 25.6, "alt": 550, "category": "comms", "mission": "Broadband constellation", "color": "#00E5FF" },
+    { "noradId": "39533", "name": "GPS BIIF-11", "lat": 5.2, "lng": 145.7, "alt": 20180, "category": "navigation", "mission": "GPS constellation", "color": "#448AFF" },
+    { "noradId": "43013", "name": "NOAA-20", "lat": -55.1, "lng": 12.3, "alt": 824, "category": "earth", "mission": "Weather / earth observation", "color": "#90EE90" },
+    { "noradId": "20580", "name": "HUBBLE SPACE TELESCOPE", "lat": 28.9, "lng": -40.5, "alt": 540, "category": "science", "mission": "Astronomy", "color": "#FFD700" },
+    { "noradId": "37849", "name": "USA 224", "lat": -3.1, "lng": 80.4, "alt": 1030, "category": "military", "mission": "Government payload", "color": "#FF3D3D" },
+    { "noradId": "44714", "name": "STARLINK-1130", "lat": 62.7, "lng": -8.9, "alt": 550, "category": "comms", "mission": "Broadband constellation", "color": "#00E5FF" },
+    { "noradId": "27424", "name": "AQUA", "lat": -34.6, "lng": 150.2, "alt": 705, "category": "earth", "mission": "Weather / earth observation", "color": "#90EE90" },
+    { "noradId": "33591", "name": "NOAA-19", "lat": 71.2, "lng": 110.5, "alt": 870, "category": "earth", "mission": "Weather / earth observation", "color": "#90EE90" }
+  ]
+}

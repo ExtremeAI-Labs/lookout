@@ -1,0 +1,24 @@
+{
+  "note": "Synthetic sample data for the Lookout public demo — not a live feed. See /DEMO_MODE.md.",
+  "commercial_flights": [
+    { "icao24": "a1b2c3", "callsign": "UAL123", "lat": 33.94, "lng": -118.41, "alt": 2100, "heading": 270, "speed_knots": 180, "model": "Boeing 737-900", "registration": "N12345", "grounded": false },
+    { "icao24": "a9e4f1", "callsign": "SWA456", "lat": 33.88, "lng": -118.20, "alt": 3200, "heading": 95, "speed_knots": 210, "model": "Boeing 737-800", "registration": "N8801Q", "grounded": false },
+    { "icao24": "a55621", "callsign": "DAL789", "lat": 34.15, "lng": -118.05, "alt": 9500, "heading": 60, "speed_knots": 420, "model": "Airbus A321", "registration": "N355DN", "grounded": false },
+    { "icao24": "a77281", "callsign": "AAL220", "lat": 33.75, "lng": -117.95, "alt": 8800, "heading": 310, "speed_knots": 400, "model": "Airbus A320", "registration": "N977AN", "grounded": false },
+    { "icao24": "a30ffe", "callsign": "JBU512", "lat": 34.30, "lng": -118.55, "alt": 1100, "heading": 135, "speed_knots": 150, "model": "Airbus A320", "registration": "N512JB", "grounded": false },
+    { "icao24": "a412bb", "callsign": "ASA88", "lat": 33.65, "lng": -118.30, "alt": 600, "heading": 20, "speed_knots": 140, "model": "Boeing 737-900", "registration": "N588AS", "grounded": false }
+  ],
+  "private_flights": [
+    { "icao24": "a3c0de", "callsign": "N77XY", "lat": 34.02, "lng": -118.45, "alt": 900, "heading": 200, "speed_knots": 110, "model": "Cessna 172", "registration": "N77XY", "grounded": false },
+    { "icao24": "a44ccd", "callsign": "N410PC", "lat": 34.10, "lng": -118.35, "alt": 1200, "heading": 15, "speed_knots": 130, "model": "Cirrus SR22", "registration": "N410PC", "grounded": false },
+    { "icao24": "a20033", "callsign": "N9021H", "lat": 33.98, "lng": -118.10, "alt": 700, "heading": 280, "speed_knots": 100, "model": "Piper PA-28", "registration": "N9021H", "grounded": false }
+  ],
+  "private_jets": [
+    { "icao24": "ab1122", "callsign": "N850GX", "lat": 34.05, "lng": -118.28, "alt": 5200, "heading": 340, "speed_knots": 320, "model": "Gulfstream G650", "registration": "N850GX", "grounded": false },
+    { "icao24": "ac3344", "callsign": "N1CS", "lat": 33.92, "lng": -118.02, "alt": 6100, "heading": 80, "speed_knots": 340, "model": "Bombardier Global 6000", "registration": "N1CS", "grounded": false }
+  ],
+  "military_flights": [
+    { "icao24": "ae1234", "callsign": "RCH441", "lat": 34.20, "lng": -118.40, "alt": 7600, "heading": 225, "speed_knots": 290, "model": "C-17 Globemaster III", "registration": "", "grounded": false },
+    { "icao24": "ae5678", "callsign": "REACH22", "lat": 33.70, "lng": -118.55, "alt": 4300, "heading": 50, "speed_knots": 250, "model": "KC-135 Stratotanker", "registration": "", "grounded": false }
+  ]
+}

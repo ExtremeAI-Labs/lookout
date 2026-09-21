@@ -1,0 +1,68 @@
+/* Case Reconstruction — a clock, a map, and the evidence. Reads the console's design tokens. */
+.recon { position: fixed; inset: 0; display: grid; grid-template-columns: minmax(300px, 380px) 1fr; grid-template-rows: auto 1fr auto; grid-template-areas: "bar bar" "list map" "time time";
+  background: var(--bg-void, #04040a); color: var(--text-primary, #e7e9ee); }
+.recon-bar { grid-area: bar; display: flex; align-items: center; gap: 12px; padding: 10px 300px 10px 16px; border-bottom: 1px solid var(--border-primary, #232838); background: var(--bg-primary, #06060c); flex-wrap: wrap; }
+.recon-title { font: 700 12px/1 ui-monospace, Menlo, monospace; letter-spacing: 0.32em; color: var(--gold-primary, #d4af37); }
+.recon-title span { color: var(--text-secondary, #b8bdcc); letter-spacing: 0.1em; text-transform: none; font-weight: 600; }
+.recon-bar .spacer { flex: 1; }
+.recon-btn { font: 700 11px/1 ui-monospace, Menlo, monospace; letter-spacing: 0.14em; padding: 9px 12px; min-height: 36px; display: inline-flex; align-items: center; gap: 6px; border-radius: 6px; cursor: pointer; text-decoration: none;
+  border: 1px solid var(--border-primary, #232838); color: var(--text-primary, #e7e9ee); background: var(--bg-panel, rgba(8, 10, 20, 0.88)); }
+.recon-btn:hover:not(:disabled), .recon-btn:focus-visible { border-color: var(--gold-primary, #d4af37); color: var(--gold-primary, #d4af37); outline: none; }
+.recon-btn.is-primary { border-color: var(--gold-primary, #d4af37); color: var(--gold-light, #f0d060); }
+.recon-btn.is-on { background: var(--gold-primary, #d4af37); color: #111; border-color: var(--gold-primary, #d4af37); }
+.recon-btn:disabled { opacity: 0.4; cursor: default; }
+.recon-list { grid-area: list; overflow: auto; border-right: 1px solid var(--border-primary, #232838); background: var(--bg-primary, #06060c); }
+.recon-list-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px 6px; font: 700 10px/1 ui-monospace, Menlo, monospace; letter-spacing: 0.22em; color: var(--cyan-primary, #00e5ff); }
+.recon-empty { padding: 14px; color: var(--text-muted, #8a90a2); font-size: 13px; line-height: 1.5; }
+.recon-items { list-style: none; margin: 0; padding: 0 8px 12px; }
+.recon-item { display: grid; grid-template-columns: 8px 1fr; gap: 10px; padding: 9px 8px; border-radius: 7px; border: 1px solid transparent; cursor: pointer; }
+.recon-item:hover { background: rgba(255, 255, 255, 0.03); }
+.recon-item.is-current { border-color: rgba(212, 175, 55, 0.5); background: rgba(212, 175, 55, 0.07); }
+.recon-item.is-future { opacity: 0.38; }
+.recon-item .bar { border-radius: 2px; background: var(--basis, #8a90a2); }
+.recon-item .kind { font: 700 9.5px/1 ui-monospace, Menlo, monospace; letter-spacing: 0.16em; color: var(--text-muted, #8a90a2); }
+.recon-item .basis { font: 700 9.5px/1 ui-monospace, Menlo, monospace; letter-spacing: 0.16em; color: var(--basis, #8a90a2); margin-left: 6px; }
+.recon-item .title { margin-top: 3px; font: 600 13px/1.3 -apple-system, system-ui, sans-serif; overflow-wrap: anywhere; }
+.recon-item .clocks { margin-top: 4px; font: 500 10.5px/1.5 ui-monospace, Menlo, monospace; color: var(--text-muted, #8a90a2); font-variant-numeric: tabular-nums; }
+.recon-item .clocks b { color: var(--text-secondary, #b8bdcc); font-weight: 600; }
+.recon-item .lag { color: var(--alert-orange, #ff9500); }
+.recon-item .src { margin-top: 2px; font-size: 10.5px; color: var(--text-muted, #8a90a2); overflow-wrap: anywhere; }
+.recon-map { grid-area: map; position: relative; min-height: 240px; }
+.recon-map-canvas { position: absolute; inset: 0; }
+.recon-map-hint { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); padding: 6px 10px; border-radius: 6px; font: 600 11px/1.3 ui-monospace, Menlo, monospace; letter-spacing: 0.06em;
+  background: var(--gold-primary, #d4af37); color: #111; z-index: 2; }
+.recon-card { position: absolute; right: 12px; top: 12px; width: min(360px, calc(100% - 24px)); z-index: 2; padding: 12px 14px; border-radius: 8px;
+  background: var(--bg-panel, rgba(8, 10, 20, 0.92)); border: 1px solid var(--border-primary, #232838); backdrop-filter: blur(6px); max-height: calc(100% - 24px); overflow: auto; }
+.recon-card h3 { margin: 0; font: 700 14px/1.3 -apple-system, system-ui, sans-serif; }
+.recon-card .basis-chip { display: inline-block; margin-bottom: 6px; padding: 3px 7px; border-radius: 4px; font: 700 9.5px/1 ui-monospace, Menlo, monospace; letter-spacing: 0.16em; color: #111; background: var(--basis, #8a90a2); }
+.recon-card .basis-explain { font-size: 11px; color: var(--text-muted, #8a90a2); margin: 6px 0 0; }
+.recon-card img, .recon-card video { display: block; width: 100%; height: auto; margin-top: 10px; border-radius: 6px; border: 1px solid var(--border-primary, #232838); background: #000; }
+.recon-card .clocks { margin-top: 8px; font: 500 11px/1.6 ui-monospace, Menlo, monospace; color: var(--text-secondary, #b8bdcc); }
+.recon-card .note { margin-top: 8px; font-size: 12.5px; line-height: 1.5; white-space: pre-wrap; }
+.recon-card .actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.recon-time { grid-area: time; padding: 10px 16px 12px; border-top: 1px solid var(--border-primary, #232838); background: var(--bg-primary, #06060c); }
+.recon-time-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.recon-time input[type="range"] { flex: 1; min-width: 160px; accent-color: var(--gold-primary, #d4af37); }
+.recon-time .clock { font: 700 13px/1 ui-monospace, Menlo, monospace; color: var(--gold-light, #f0d060); font-variant-numeric: tabular-nums; min-width: 190px; }
+.recon-time .speed { display: flex; gap: 4px; }
+.recon-time .ticks { position: relative; height: 10px; margin: 6px 4px 0; }
+.recon-time .tick { position: absolute; top: 0; width: 2px; height: 10px; background: var(--basis, #8a90a2); border-radius: 1px; }
+.recon-time .no-times { font-size: 12px; color: var(--text-muted, #8a90a2); }
+.recon-form { padding: 10px 14px 16px; border-top: 1px solid var(--border-primary, #232838); display: grid; gap: 8px; }
+.recon-form label { display: grid; gap: 3px; font: 700 9.5px/1.2 ui-monospace, Menlo, monospace; letter-spacing: 0.16em; color: var(--text-muted, #8a90a2); }
+.recon-form input, .recon-form select, .recon-form textarea { padding: 7px 8px; border-radius: 5px; border: 1px solid var(--border-primary, #232838); background: rgba(255, 255, 255, 0.04); color: var(--text-primary, #e7e9ee); font: 500 12.5px/1.3 -apple-system, system-ui, sans-serif; min-height: 34px; }
+.recon-form input:focus-visible, .recon-form select:focus-visible, .recon-form textarea:focus-visible { outline: none; border-color: var(--gold-primary, #d4af37); }
+.recon-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.recon-form .row3 { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: end; }
+.recon-form .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.recon-error { padding: 6px 8px; border-radius: 5px; font-size: 11.5px; color: var(--alert-red, #ff3d3d); background: rgba(255, 61, 61, 0.08); border: 1px solid rgba(255, 61, 61, 0.35); }
+.recon-imagery { display: grid; gap: 6px; }
+.recon-imagery button { display: grid; grid-template-columns: 64px 1fr; gap: 8px; align-items: center; text-align: left; padding: 4px; border-radius: 6px; border: 1px solid var(--border-primary, #232838); background: none; color: var(--text-primary, #e7e9ee); cursor: pointer; font-size: 11.5px; }
+.recon-imagery img { width: 64px; height: 48px; object-fit: cover; border-radius: 4px; background: #000; }
+.recon-veil { grid-area: 1 / 1 / -1 / -1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 24px; font: 600 12px/1.6 ui-monospace, Menlo, monospace; color: var(--text-secondary, #b8bdcc); }
+@media (max-width: 860px) {
+  .recon-bar { padding-right: 16px; padding-top: 52px; }
+  .recon { grid-template-columns: 1fr; grid-template-rows: auto minmax(260px, 42vh) 1fr auto; grid-template-areas: "bar" "map" "list" "time"; }
+  .recon-list { border-right: 0; border-top: 1px solid var(--border-primary, #232838); }
+  .recon-card { left: 12px; width: auto; }
+}

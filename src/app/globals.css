@@ -1,0 +1,44 @@
+/* Lookout demo — global stylesheet.
+   Written fresh for this public demo (not a copy of upstream Lookout's globals.css, which
+   carries the console's own gold design system and ~2500 lines of console-only styling this
+   demo does not ship). The 3D theater is fully self-styled by src/app/theater/theater.css and
+   needs nothing from here; this file only has two jobs:
+     1. a minimal reset so the theater's `position: fixed; inset: 0` canvas fills the viewport
+        cleanly with no scrollbars or default margins, and
+     2. the small set of CSS custom properties the Scout assistant dock reads (Assistant
+        Standard §G2 aliases — see src/components/assistant/assistant.css and
+        src/lib/assistant/kit/WelcomeModal.tsx). Its palette is set to match the theater's own
+        cyan/near-black look rather than the upstream gold, so the two feel like one app. */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0; width: 100%; height: 100%;
+  overflow: hidden;
+  background: #0a0a0f;
+  color: #e8eaed;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  /* Assistant Standard §G2 aliases — the Scout dock and welcome sheet read only these. */
+  --background: #0a0a0f;
+  --foreground: #e8eaed;
+  --border: #232838;
+  --primary: #00d4ff;
+  --primary-foreground: #06060c;
+  --muted-foreground: #8a90a2;
+  --assistant-radius: 10px;
+  --assistant-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+  --assistant-control-radius: 6px;
+  --assistant-display-font: ui-monospace, Menlo, monospace;
+  --assistant-display-tracking: 0.18em;
+  --assistant-display-transform: uppercase;
+  --alert-red: #ff3d3d;
+  --alert-orange: #ff9500;
+  --alert-green: #00e676;
+}

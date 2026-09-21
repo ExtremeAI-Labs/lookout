@@ -1,0 +1,16 @@
+node_modules
+.next
+/out/
+/build
+/coverage
+.env
+.env*.local
+.DS_Store
+*.log
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+.cache/
+
+# Cesium's prebuilt assets (~22 MB) are staged from node_modules by tools/prepare-cesium-assets.mjs
+public/vendor/cesium/

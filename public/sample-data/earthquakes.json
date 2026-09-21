@@ -1,0 +1,13 @@
+{
+  "note": "Synthetic sample data for the Lookout public demo — not a live feed, not real events. See /DEMO_MODE.md.",
+  "earthquakes": [
+    { "id": "demo-eq-1", "lat": 34.02, "lng": -118.29, "magnitude": 3.4, "depth": 8.1, "place": "4km NE of Los Angeles, CA (sample)", "time": 1789750800000 },
+    { "id": "demo-eq-2", "lat": 37.77, "lng": -122.42, "magnitude": 2.8, "depth": 6.4, "place": "3km W of San Francisco, CA (sample)", "time": 1789743600000 },
+    { "id": "demo-eq-3", "lat": 61.22, "lng": -149.90, "magnitude": 4.6, "depth": 42.0, "place": "12km SE of Anchorage, AK (sample)", "time": 1789736400000 },
+    { "id": "demo-eq-4", "lat": 35.68, "lng": 139.77, "magnitude": 5.1, "depth": 55.3, "place": "off the coast of Chiba, Japan (sample)", "time": 1789725600000 },
+    { "id": "demo-eq-5", "lat": -33.45, "lng": -70.67, "magnitude": 4.2, "depth": 95.0, "place": "18km W of Santiago, Chile (sample)", "time": 1789714800000 },
+    { "id": "demo-eq-6", "lat": -6.20, "lng": 106.82, "magnitude": 3.9, "depth": 12.7, "place": "near Jakarta, Indonesia (sample)", "time": 1789700400000 },
+    { "id": "demo-eq-7", "lat": 38.90, "lng": 43.13, "magnitude": 6.1, "depth": 10.0, "place": "eastern Turkey (sample)", "time": 1789686000000 },
+    { "id": "demo-eq-8", "lat": 19.43, "lng": -99.13, "magnitude": 3.1, "depth": 25.5, "place": "5km S of Mexico City, MX (sample)", "time": 1789671600000 }
+  ]
+}

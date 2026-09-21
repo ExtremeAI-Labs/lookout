@@ -1,0 +1,88 @@
+/* Scout — the assistant dock. Token-driven (§G2 aliases live in globals.css); no palette of its own. */
+.scout-launcher { position: fixed; right: 16px; bottom: 44px; z-index: 9990; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  font: 700 11px/1 ui-monospace, Menlo, monospace; letter-spacing: 0.22em; color: var(--primary); background: var(--background); border: 1px solid var(--primary); box-shadow: var(--assistant-shadow); backdrop-filter: blur(6px); }
+.scout-launcher:hover, .scout-launcher:focus-visible { outline: none; background: var(--primary); color: var(--primary-foreground); }
+.scout-launcher .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.scout-launcher.is-live .dot { background: var(--alert-green, #00e676); box-shadow: 0 0 8px var(--alert-green, #00e676); }
+
+.scout-panel { position: fixed; right: 16px; bottom: 44px; z-index: 9991; width: min(400px, calc(100vw - 32px)); height: min(640px, calc(100vh - 80px)); display: grid; grid-template-rows: auto auto 1fr auto auto; overflow: hidden;
+  color: var(--foreground); background: var(--background); border: 1px solid var(--border); border-radius: var(--assistant-radius); box-shadow: var(--assistant-shadow); }
+.scout-head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--border); cursor: grab; user-select: none; touch-action: none; }
+.scout-head:active { cursor: grabbing; }
+.scout-head .name { font: 700 12px/1 var(--assistant-display-font); letter-spacing: var(--assistant-display-tracking); text-transform: var(--assistant-display-transform); color: var(--primary); }
+.scout-head .sub { font: 500 10.5px/1.2 ui-monospace, Menlo, monospace; color: var(--muted-foreground); letter-spacing: 0.08em; }
+.scout-head .spacer { flex: 1; }
+.scout-iconbtn { min-width: 30px; min-height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--assistant-control-radius); border: 1px solid transparent; background: none; color: var(--muted-foreground); cursor: pointer; font: 700 12px/1 ui-monospace, Menlo, monospace; }
+.scout-iconbtn:hover, .scout-iconbtn:focus-visible { outline: none; color: var(--foreground); border-color: var(--border); }
+
+.scout-voicebar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 6px 12px; border-bottom: 1px solid var(--border); font: 600 10.5px/1.3 ui-monospace, Menlo, monospace; color: var(--muted-foreground); letter-spacing: 0.06em; min-height: 32px; }
+.scout-voicebar .live { color: var(--alert-green, #00e676); }
+.scout-voicebar .warn { color: var(--alert-orange, #ff9500); }
+.scout-voicebar .err { color: var(--alert-red, #ff3d3d); }
+.scout-voicebar .spacer { flex: 1; }
+
+.scout-msgs { overflow: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; overscroll-behavior: contain; }
+.scout-empty { margin: auto 0; text-align: center; color: var(--muted-foreground); font-size: 12.5px; line-height: 1.5; padding: 12px; }
+.scout-empty b { display: block; color: var(--foreground); font: 700 13px/1.4 -apple-system, system-ui, sans-serif; margin-bottom: 4px; }
+.scout-msg { max-width: 92%; padding: 8px 11px; border-radius: 10px; font: 500 13px/1.45 -apple-system, system-ui, sans-serif; white-space: pre-wrap; overflow-wrap: anywhere; }
+.scout-msg.user { align-self: flex-end; background: var(--primary); color: var(--primary-foreground); border-bottom-right-radius: 3px; }
+.scout-msg.assistant { align-self: flex-start; background: color-mix(in srgb, var(--foreground) 7%, transparent); border: 1px solid var(--border); border-bottom-left-radius: 3px; }
+.scout-msg.voice::before { content: "◉ "; color: var(--alert-green, #00e676); }
+.scout-msg .cursor { display: inline-block; width: 6px; height: 12px; margin-left: 2px; background: var(--primary); animation: scout-blink 1s steps(2) infinite; vertical-align: -1px; }
+@keyframes scout-blink { to { opacity: 0; } }
+.scout-tools { align-self: flex-start; display: grid; gap: 3px; max-width: 92%; }
+.scout-tool { font: 600 10.5px/1.4 ui-monospace, Menlo, monospace; letter-spacing: 0.04em; color: var(--muted-foreground); }
+.scout-tool.ok::before { content: "✓ "; color: var(--alert-green, #00e676); }
+.scout-tool.fail::before { content: "✗ "; color: var(--alert-red, #ff3d3d); }
+.scout-tool.run::before { content: "… "; color: var(--primary); }
+.scout-card { align-self: stretch; padding: 8px 11px; border-radius: 8px; border: 1px dashed var(--border); background: color-mix(in srgb, var(--primary) 6%, transparent); }
+.scout-card .t { font: 700 10px/1 ui-monospace, Menlo, monospace; letter-spacing: 0.2em; text-transform: uppercase; color: var(--primary); margin-bottom: 6px; }
+.scout-card .l { font: 500 12.5px/1.45 -apple-system, system-ui, sans-serif; white-space: pre-wrap; overflow-wrap: anywhere; }
+.scout-card .k { margin-top: 6px; font: 600 9.5px/1.3 ui-monospace, Menlo, monospace; color: var(--muted-foreground); letter-spacing: 0.06em; }
+.scout-confirm { align-self: stretch; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--alert-orange, #ff9500); background: color-mix(in srgb, var(--alert-orange, #ff9500) 8%, transparent); }
+.scout-confirm .q { font: 600 12.5px/1.45 -apple-system, system-ui, sans-serif; white-space: pre-wrap; overflow-wrap: anywhere; margin-bottom: 8px; }
+.scout-confirm .row { display: flex; gap: 6px; }
+.scout-err { align-self: stretch; padding: 8px 11px; border-radius: 8px; font-size: 12px; color: var(--alert-red, #ff3d3d); border: 1px solid color-mix(in srgb, var(--alert-red, #ff3d3d) 40%, transparent); }
+
+.scout-btn { font: 700 11px/1 ui-monospace, Menlo, monospace; letter-spacing: 0.12em; min-height: 34px; padding: 0 12px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-radius: var(--assistant-control-radius); cursor: pointer;
+  border: 1px solid var(--border); color: var(--foreground); background: none; }
+.scout-btn:hover:not(:disabled), .scout-btn:focus-visible { outline: none; border-color: var(--primary); color: var(--primary); }
+.scout-btn.is-primary { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+.scout-btn.is-primary:hover:not(:disabled) { color: var(--primary-foreground); filter: brightness(1.08); }
+.scout-btn:disabled { opacity: 0.45; cursor: default; }
+
+.scout-chips { display: flex; gap: 6px; flex-wrap: wrap; padding: 0 12px 8px; }
+.scout-chip { font: 600 11px/1.2 -apple-system, system-ui, sans-serif; min-height: 30px; padding: 0 10px; border-radius: 999px; border: 1px solid var(--border); background: none; color: var(--muted-foreground); cursor: pointer; }
+.scout-chip:hover, .scout-chip:focus-visible { outline: none; border-color: var(--primary); color: var(--primary); }
+
+.scout-compose { display: grid; grid-template-columns: auto 1fr auto; gap: 6px; align-items: end; padding: 10px 12px 12px; border-top: 1px solid var(--border); }
+.scout-compose textarea { resize: none; min-height: 38px; max-height: 120px; padding: 9px 10px; border-radius: var(--assistant-control-radius); border: 1px solid var(--border); background: color-mix(in srgb, var(--foreground) 5%, transparent); color: var(--foreground); font: 500 13px/1.4 -apple-system, system-ui, sans-serif; }
+.scout-compose textarea:focus-visible { outline: none; border-color: var(--primary); }
+.scout-mic { min-width: 38px; min-height: 38px; border-radius: 50%; border: 1px solid var(--border); background: none; color: var(--muted-foreground); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; touch-action: none; user-select: none; }
+.scout-mic:hover, .scout-mic:focus-visible { outline: none; border-color: var(--primary); color: var(--primary); }
+.scout-mic.is-live { border-color: var(--alert-green, #00e676); color: var(--alert-green, #00e676); }
+.scout-mic.is-talking { background: var(--alert-green, #00e676); color: #051; box-shadow: 0 0 0 6px color-mix(in srgb, var(--alert-green, #00e676) 25%, transparent); }
+.scout-mic.is-busy { border-color: var(--primary); color: var(--primary); }
+.scout-mic:disabled { opacity: 0.4; cursor: default; }
+.scout-hint { grid-column: 1 / -1; font: 500 10px/1.3 ui-monospace, Menlo, monospace; color: var(--muted-foreground); letter-spacing: 0.06em; }
+
+.scout-nudge { position: fixed; right: 16px; bottom: 92px; z-index: 9990; max-width: 240px; padding: 8px 11px; border-radius: 8px; font: 500 12px/1.4 -apple-system, system-ui, sans-serif; color: var(--foreground); background: var(--background); border: 1px solid var(--primary); box-shadow: var(--assistant-shadow); }
+
+@media (max-width: 640px) {
+  .scout-panel { right: 0; bottom: 0; width: 100vw; height: min(78vh, 640px); border-radius: var(--assistant-radius) var(--assistant-radius) 0 0; border-left: 0; border-right: 0; border-bottom: 0; }
+  .scout-launcher { right: 12px; bottom: 16px; }
+  .scout-nudge { right: 12px; bottom: 64px; }
+}
+@media (prefers-reduced-motion: reduce) { .scout-msg .cursor { animation: none; } }
+
+/* Docked variant: the theater's command dock hosts the launcher; the panel rises above the dock. */
+.scout-launcher.in-dock { position: static; min-height: 40px; padding: 0 18px; border-radius: 999px; box-shadow: none; backdrop-filter: none;
+  font: 600 10px/1 'JetBrains Mono', ui-monospace, Menlo, monospace; letter-spacing: 0.22em; color: #e8eaed; background: rgba(var(--theater-accent-rgb, 0, 212, 255), 0.12); border: 1px solid rgba(var(--theater-accent-rgb, 0, 212, 255), 0.5); }
+/* the theater sets --theater-accent* on <html> per skin (gold for LOOKOUT, cyan for GOD'S EYE); defaults keep the cyan */
+.scout-launcher.in-dock:hover, .scout-launcher.in-dock:focus-visible, .scout-launcher.in-dock.is-open { background: rgba(var(--theater-accent-rgb, 0, 212, 255), 0.22); color: #fff; border-color: var(--theater-accent, #00d4ff); box-shadow: 0 0 18px rgba(var(--theater-accent-rgb, 0, 212, 255), 0.25); }
+.scout-launcher.in-dock .dot { background: var(--theater-accent, #00d4ff); box-shadow: 0 0 8px rgba(var(--theater-accent-rgb, 0, 212, 255), 0.6); }
+.scout-launcher.in-dock.is-live .dot { background: #48e69a; box-shadow: 0 0 8px #48e69a; }
+.scout-panel.on-dock { right: auto; left: 50%; bottom: calc(2vh + 108px); margin-left: -200px; z-index: 146;
+  --background: var(--theater-panel-bg, rgba(9, 18, 27, 0.92)); --border: var(--theater-panel-border, rgba(123, 189, 211, 0.28)); --primary: var(--theater-accent, #00d4ff); --primary-foreground: var(--theater-accent-fg, #04131a); --foreground: #e8eaed; --muted-foreground: rgba(232, 234, 237, 0.5);
+  --assistant-radius: 14px; backdrop-filter: blur(24px) saturate(1.35); -webkit-backdrop-filter: blur(24px) saturate(1.35); }
+@media (max-width: 980px) { .scout-panel.on-dock { left: 16px; margin-left: 0; width: calc(100vw - 32px); bottom: calc(2vh + 200px); height: min(50vh, 640px); } }

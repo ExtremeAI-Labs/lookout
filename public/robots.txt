@@ -1,0 +1,4 @@
+# Lookout — public demo
+User-agent: *
+Allow: /
+Disallow: /api/

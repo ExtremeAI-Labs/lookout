@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "id": "demo-la-flyover",
+  "title": "Downtown LA — sample flyover",
+  "createdAt": "2026-09-18T00:00:00.000Z",
+  "updatedAt": "2026-09-18T00:00:00.000Z",
+  "shots": [
+    {
+      "id": "shot-wide",
+      "label": "Establishing — downtown LA",
+      "camera": { "lat": 34.0522, "lng": -118.2437, "alt": 15000, "heading": 0, "pitch": -35 },
+      "durationSec": 6,
+      "holdSec": 3,
+      "style": "normal",
+      "layers": { "flights": true, "military": true }
+    },
+    {
+      "id": "shot-noir",
+      "label": "Low pass, noir look",
+      "camera": { "lat": 33.95, "lng": -118.35, "alt": 3200, "heading": 90, "pitch": -25 },
+      "durationSec": 5,
+      "holdSec": 3,
+      "style": "noir",
+      "layers": { "flights": true, "military": true }
+    },
+    {
+      "id": "shot-overhead",
+      "label": "Overhead, thermal look",
+      "camera": { "lat": 34.05, "lng": -118.30, "alt": 9000, "heading": 0, "pitch": -90 },
+      "durationSec": 5,
+      "holdSec": 2,
+      "style": "thermal",
+      "layers": { "flights": true, "military": true, "satellites": true }
+    },
+    {
+      "id": "shot-return",
+      "label": "Return, wide",
+      "camera": { "lat": 34.0522, "lng": -118.2437, "alt": 20000, "heading": 45, "pitch": -40 },
+      "durationSec": 6,
+      "holdSec": 2,
+      "style": "normal",
+      "layers": { "flights": true, "military": true }
+    }
+  ]
+}
