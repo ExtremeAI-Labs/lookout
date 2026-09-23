@@ -13,6 +13,8 @@ not in this tree — see [What is here, what is not](#what-is-here-what-is-not).
 
 ### Just look — one click, no keys
 
+The showcase is already running at **[lookout.coderecycle.ai](https://lookout.coderecycle.ai)** — open it and press **L** for the layers. To run your own copy:
+
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FExtremeAI-Labs%2Flookout&project-name=lookout&repository-name=lookout&env=LOOKOUT_DEMO,NEXT_PUBLIC_LOOKOUT_DEMO,NEXT_PUBLIC_CESIUM_CDN&envDescription=Set%20all%20three%20to%201%20for%20the%20read-only%20showcase&envLink=https%3A%2F%2Fgithub.com%2FExtremeAI-Labs%2Flookout%2Fblob%2Fmain%2FDEMO_MODE.md)
 
 Your own copy of the read-only hosted showcase — no keys, no account beyond Vercel's. It sets the
