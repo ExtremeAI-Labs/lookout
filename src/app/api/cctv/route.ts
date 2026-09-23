@@ -879,7 +879,10 @@ function rebuildInBackground() {
 function servePayload(request: Request, ready: Payload) {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json; charset=utf-8',
-    'Cache-Control': 'public, max-age=60, stale-while-revalidate=600',
+    // s-maxage (the CDN, e.g. Vercel's edge) is set separately from max-age (the browser): the
+    // catalogue is a slow-moving index (see the file header), so a repeat viewer should be
+    // answered by the edge for at least 10 minutes without this function running again.
+    'Cache-Control': 'public, max-age=60, s-maxage=600, stale-while-revalidate=600',
     'Vary': 'Accept-Encoding',
     'ETag': ready.etag,
   };
@@ -955,8 +958,8 @@ export async function GET(request: Request) {
     }
 
     const cacheControl = pendingRegions.length > 0 || allCameras.length < 50
-      ? 'no-store, max-age=0' 
-      : 'public, s-maxage=300, stale-while-revalidate=600';
+      ? 'no-store, max-age=0'
+      : 'public, s-maxage=600, stale-while-revalidate=600';
 
     const outCameras = liveOnly ? allCameras.filter(isLiveCamera) : allCameras;
 

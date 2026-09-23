@@ -14,3 +14,7 @@ next-env.d.ts
 
 # Cesium's prebuilt assets (~22 MB) are staged from node_modules by tools/prepare-cesium-assets.mjs
 public/vendor/cesium/
+
+.claude/verify-evidence/
+.claude/verify-run/
+.claude/decisions.tsv

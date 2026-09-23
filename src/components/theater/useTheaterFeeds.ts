@@ -5,7 +5,8 @@
 // an empty sky must never be mistaken for a quiet one.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { loadCameraCatalog } from '@/lib/camera-catalog';
-import { CANVASS_MAX_ALT_M, THEATER_LAYERS, fetchCanvassQuery, type TheaterLayerId } from '@/lib/theater/layers';
+import { CANVASS_MAX_ALT_M, DEMO_MODE, THEATER_LAYERS, fetchCanvassQuery, type TheaterLayerId } from '@/lib/theater/layers';
+import { DEFAULT_THEATER_VIEW } from '@/lib/theater-view';
 import type { TheaterLayer } from './layers/base';
 
 export type FeedStatus = { count: number; updatedAt: number | null; error: string | null; loading: boolean; note?: string };
@@ -66,12 +67,18 @@ export function useTheaterFeeds(active: Set<TheaterLayerId>, layers: Map<Theater
   usePlainPoller('earthquakes', active.has('earthquakes'), layers, deliver, patch);
 
   // Cameras: the catalogue loader already knows how to fetch region by region and retry.
+  // In the hosted showcase (DEMO_MODE) the first request is bounded to the region around the
+  // current view instead of the whole world — `region=all` is ~39k cameras / ~17.5 MB raw, real
+  // egress on every viewer's first toggle. A self-hosted install (its own budget, own keys)
+  // still gets the full worldwide catalogue.
   useEffect(() => {
     if (!active.has('cctv') || !layers) return;
     patch('cctv', { loading: true, error: null });
+    const center = DEMO_MODE ? (getViewCenter() ?? DEFAULT_THEATER_VIEW) : undefined;
     const stop = loadCameraCatalog(
       (batch) => deliver('cctv', batch),
       () => patch('cctv', { error: 'some camera regions failed to load', loading: false }),
+      center ? { center: { lat: center.lat, lng: center.lng, radius: 500 } } : undefined,
     );
     return stop;
     // eslint-disable-next-line react-hooks/exhaustive-deps

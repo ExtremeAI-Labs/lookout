@@ -11,13 +11,58 @@ be: the private 2D console, person/username lookups, the port scanner, the track
 generator, client-owned camera credentials, and the owner's on-device YOLO tracker.
 
 **Demo mode is now a switch, not a different tree.** `LOOKOUT_DEMO=1` at run time and
-`NEXT_PUBLIC_LOOKOUT_DEMO=1` at build time give the hosted showcase: the aircraft, satellite and
-earthquake layers read `public/sample-data/*.json`; the HISTORY panel scrubs the sealed sample
-recording under `data/tracks/` (the data root becomes `./data`); every non-GET request and every
-route that writes, calls a live feed or needs a key is refused with 404 by the guard's denylist
-(`src/lib/access-guard.ts`); the recorder and the registry download never start; Scout is off.
-`NEXT_PUBLIC_CESIUM_CDN=1` loads the pinned Cesium build from Cesium's CDN. A self-hosted install
-sets none of these and gets the live feeds with its own keys.
+`NEXT_PUBLIC_LOOKOUT_DEMO=1` at build time give the hosted showcase. As of 2026-09-23 that switch
+is **per layer**, not a blanket one:
+
+- **Live** — earthquakes (USGS), satellites (CelesTrak TLEs, propagated server-side) and the
+  camera catalogue (public DOT/traffic feeds, Windy, owner-published cameras, including YouTube
+  live streams) call their real routes even in the hosted showcase. These three have no
+  non-commercial clause in their terms — but they are not free of per-viewer cost either, and an
+  earlier draft of this file overstated that ("no meaningful per-viewer cost... never a metered
+  call"). Measured 2026-09-23: the unscoped `/api/cctv?region=all` catalogue is 17.5 MB raw /
+  ~2.0 MB gzip and `/api/satellites` is 2.7 MB raw / ~375 KB gzip, and the theater's client fetch
+  for every layer (`useTheaterFeeds.ts`) uses `cache: 'no-store'`, so each layer toggle is a fresh
+  network round trip for every viewer, every time — the CDN `s-maxage` below keeps that off the
+  origin function, but it is still a real edge-request/egress hit per toggle, not amortized to one
+  hit globally. The camera catalogue has an existing lever the other two don't: `/api/cctv` already
+  accepts `?lat=&lng=&radius=` and narrows to the named region(s) around that point
+  (`getRegionsForBounds` in `src/app/api/cctv/route.ts`), backed by the same per-region 30-minute
+  cache (`src/lib/sourceCache.ts`) the worldwide path uses. As of 2026-09-23 the showcase's client
+  (`loadCameraCatalog` in `src/lib/camera-catalog.ts`, driven from `useTheaterFeeds.ts`) passes the
+  current view centre on its first request whenever `NEXT_PUBLIC_LOOKOUT_DEMO=1`, instead of
+  `region=all` — a viewer's first Cameras toggle now costs one region (low hundreds of KB to a
+  couple MB, not 17.5 MB). Panning far away and re-toggling repeats the same bounded request at the
+  new centre; there is no background re-fetch as the view moves (matches the existing `refreshMs: 0`
+  "load once per toggle" design). Satellites has no equivalent viewport lever — CelesTrak TLEs are
+  global and propagated for the whole catalogue in one pass — so its payload stays what it is, real
+  bytes on every toggle, bounded only by the CDN's 2-hour cache below. **Action item, not done from
+  this tree:** set a bandwidth budget/alert on the Vercel project this repo deploys to, so a traffic
+  spike on satellites (or any live layer) pages someone before it becomes a bill; that's a Vercel
+  dashboard setting, outside what a worktree commit can do. `WINDY_WEBCAMS_KEY` is optional even
+  here: without it the Windy layer of the catalogue is simply empty, silently.
+- **Still sample** — aircraft and military read `public/sample-data/*.json`. adsb.fi/OpenSky are
+  non-commercial, 1-request-per-second community feeds; a public multi-viewer site can't honor
+  that limit without its own polling+fan-out layer and, if the channel ever monetizes, a paid feed
+  (ADS-B Exchange or an owned receiver) — so aircraft stay replay until that's built. Ships/AIS
+  (`/api/maritime`), TRACE, the watchlist, Scout, cases and every route that writes or needs a key
+  stay refused with 404, same as before.
+
+The HISTORY panel scrubs the sealed sample recording under `data/tracks/` (the data root becomes
+`./data`) regardless; every non-GET request and every route that writes or needs a key is refused
+with 404 by the guard's denylist (`src/lib/access-guard.ts`, `DEMO_BLOCKED_PREFIXES` — earthquakes,
+satellites and cctv were removed from that list, nothing else changed); the recorder and the
+registry download never start; Scout is off. `NEXT_PUBLIC_CESIUM_CDN=1` loads the pinned Cesium
+build from Cesium's CDN. A self-hosted install sets none of these and gets every feed live with its
+own keys.
+
+**Feed etiquette, because this runs on serverless.** The live showcase routes set `Cache-Control`
+so a hosting CDN answers repeat viewers without a fresh call upstream: earthquakes `s-maxage=60`,
+the camera catalogue `s-maxage=600`, satellites `s-maxage=7200` — CelesTrak blocks IPs that re-fetch
+the same GP file more than once every 2 hours, so the satellites route also throttles its own
+in-memory refresh to that interval (not just the CDN header) and keeps its on-disk TLE cache under
+the OS temp dir rather than the read-only deploy directory a serverless function ships from. None
+of the three run a background timer that assumes a long-lived process — every refresh happens
+inside a request.
 
 The sections below are the original 18 Sep record of what was removed and why; they remain true
 for the parts that are still absent, and are kept for the audit trail.

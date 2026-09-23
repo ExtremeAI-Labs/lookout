@@ -22,8 +22,12 @@ export type TheaterLayerDef = {
   source: string;
 };
 
-/** Hosted demo (NEXT_PUBLIC_LOOKOUT_DEMO=1): the live third-party feeds are never called; the same
- *  client code reads bundled synthetic samples under /sample-data/ and says so in the source line. */
+/** Hosted demo (NEXT_PUBLIC_LOOKOUT_DEMO=1): PER LAYER, not a blanket switch. Aircraft feeds are
+ *  non-commercial (adsb.fi/OpenSky, 1 req/s) and maritime needs a paid AIS_API_KEY, so those keep
+ *  reading the bundled synthetic samples under /sample-data/ and say so in the source line.
+ *  Earthquakes (USGS), satellites (CelesTrak) and cameras (the /api/cctv catalogue, incl. YouTube
+ *  live cams) have no non-commercial clause and no per-viewer cost, so the showcase calls their
+ *  live routes even in demo mode — see DEMO_MODE.md. */
 export const DEMO_MODE = process.env.NEXT_PUBLIC_LOOKOUT_DEMO === '1';
 const feed = (live: string, sample: string) => (DEMO_MODE ? `/sample-data/${sample}.json` : live);
 const src = (live: string) => (DEMO_MODE ? 'Synthetic sample data (offline demo)' : live);
@@ -32,10 +36,10 @@ export const THEATER_LAYERS: TheaterLayerDef[] = [
   { id: 'flights', label: 'Aircraft', group: 'AVIATION', endpoint: feed('/api/flights', 'flights'), refreshMs: 45_000, defaultOn: true, countNoun: 'aircraft', source: src('OpenSky Network · adsb.fi') },
   { id: 'military', label: 'Military', group: 'AVIATION', endpoint: feed('/api/flights', 'flights'), refreshMs: 45_000, defaultOn: true, countNoun: 'aircraft', source: src('adsb.fi /mil') },
   { id: 'vessels', label: 'Ships & ports', group: 'MARITIME', endpoint: '/api/maritime', refreshMs: 60_000, defaultOn: false, countNoun: 'vessels', source: 'AIS via aisstream.io (needs AIS_API_KEY) · major ports & chokepoints curated' },
-  { id: 'satellites', label: 'Satellites', group: 'SPACE', endpoint: feed('/api/satellites', 'satellites'), refreshMs: 60_000, defaultOn: false, countNoun: 'objects', source: src('CelesTrak TLEs, propagated here') },
+  { id: 'satellites', label: 'Satellites', group: 'SPACE', endpoint: '/api/satellites', refreshMs: 60_000, defaultOn: false, countNoun: 'objects', source: 'CelesTrak TLEs, propagated here' },
   { id: 'cctv', label: 'Cameras', group: 'SURVEIL', endpoint: '/api/cctv', refreshMs: 0, defaultOn: false, countNoun: 'cameras', source: 'DOT feeds · Windy · owner-published' },
   { id: 'canvass', label: 'Canvass devices', group: 'SURVEIL', endpoint: '/api/canvass', refreshMs: 0, defaultOn: false, countNoun: 'devices', source: 'OpenStreetMap / DeFlock, within 1.5 km of the view' },
-  { id: 'earthquakes', label: 'Earthquakes', group: 'HAZARD', endpoint: feed('/api/earthquakes', 'earthquakes'), refreshMs: 300_000, defaultOn: false, countNoun: 'events', source: src('USGS, last 24 h') },
+  { id: 'earthquakes', label: 'Earthquakes', group: 'HAZARD', endpoint: '/api/earthquakes', refreshMs: 300_000, defaultOn: false, countNoun: 'events', source: 'USGS, last 24 h' },
 ];
 
 const IDS = new Set<string>([...THEATER_LAYERS.map((l) => l.id), 'tracks']);

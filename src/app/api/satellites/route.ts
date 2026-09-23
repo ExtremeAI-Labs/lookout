@@ -116,8 +116,13 @@ const SATNOGS_API = 'https://db.satnogs.org/api/tle/?format=json';
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { tmpdir } from 'os';
 
-const CACHE_DIR = join(process.cwd(), '.next', 'cache');
+// os.tmpdir() rather than process.cwd(): on a serverless host (Vercel) the deployment
+// directory is read-only and only /tmp is writable, so this is the only path a cache write can
+// land on there. All calls below are still wrapped in try/catch — a self-hosted install (or any
+// other read-only layout) tolerates the error rather than crashing the route either way.
+const CACHE_DIR = join(tmpdir(), 'lookout-satellites-cache');
 const CACHE_FILE = join(CACHE_DIR, 'satellites-tle-cache.json');
 
 /** Save TLE data to disk so it survives server restarts */
@@ -194,7 +199,10 @@ export async function GET() {
     let allSats: any[] = globalCachedSats;
     let source = 'memory-cache';
 
-    if (globalCachedSats.length === 0 || globalCachedSats.length < 5000 || nowTime - globalCacheTime > 3600000) { // refresh if empty, too few, or stale
+    // CelesTrak blocks IPs that re-fetch the same GP file more often than every 2 hours (7_200_000 ms) —
+    // match that here, not just in the response Cache-Control, since a warm serverless instance can
+    // otherwise re-hit every CELESTRAK_GROUPS url once an hour regardless of how the CDN caches the response.
+    if (globalCachedSats.length === 0 || globalCachedSats.length < 5000 || nowTime - globalCacheTime > 7_200_000) { // refresh if empty, too few, or stale
       
       // Primary: Fetch multiple CelesTrak groups in parallel
       const groupResults = await Promise.allSettled(
@@ -318,9 +326,11 @@ export async function GET() {
       });
     }
 
-    const cacheControl = satellites.length < 10 
-      ? 'no-store, max-age=0' 
-      : 'public, s-maxage=120, stale-while-revalidate=300';
+    // CelesTrak's 2-hour re-fetch rule (see above): the CDN must answer repeat viewers for at
+    // least that long so Vercel's edge, not this function, absorbs the traffic.
+    const cacheControl = satellites.length < 10
+      ? 'no-store, max-age=0'
+      : 'public, s-maxage=7200, stale-while-revalidate=3600';
 
     // Count by category
     const categoryCounts: Record<string, number> = {};

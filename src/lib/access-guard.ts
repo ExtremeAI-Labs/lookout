@@ -39,12 +39,15 @@ export type HostKind = 'loopback' | 'public' | 'other';
 export const DEMO_MODE = process.env.LOOKOUT_DEMO === '1';
 export const ALLOW_LAN = process.env.LOOKOUT_ALLOW_LAN === '1';
 
-/** Path prefixes the hosted demo never serves: writes, live feeds, key-bearing routes, the console. */
+/** Path prefixes the hosted demo never serves: writes, live feeds, key-bearing routes, the console.
+ *  '/api/earthquakes' (USGS), '/api/satellites' (CelesTrak) and '/api/cctv' (the camera catalogue +
+ *  YouTube live cams) are deliberately NOT in this list — those three have no non-commercial clause
+ *  and no per-viewer cost, so the showcase serves them live (2026-09-23). See DEMO_MODE.md. */
 const DEMO_BLOCKED_PREFIXES = [
   '/console', '/fisherman', '/docs',
   '/api/fisherman', '/api/osint', '/api/scanner', '/api/person', '/api/client-cameras', '/api/tracker',
   '/api/cases', '/api/canvass', '/api/watchlist', '/api/watches', '/api/assistant',
-  '/api/flights', '/api/satellites', '/api/earthquakes', '/api/aircraft', '/api/cctv', '/api/maritime', '/api/geosearch',
+  '/api/flights', '/api/aircraft', '/api/maritime', '/api/geosearch',
 ];
 export function isBlockedDemoPath(pathname: string): boolean {
   const p = pathname.toLowerCase();

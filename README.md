@@ -6,9 +6,45 @@ operates it and is told, in code, what it may never send to a model; cases with 
 findings; and a recorder that keeps your **own** receiver's history in a chain you can verify.
 
 It is the 3D theater of a larger private project (Lookout), published as source for you to read,
-clone and run yourself — on your machine, with your own keys. There is nothing to install beyond
-`npm i`, no package, no account, no service of ours in the loop. The private console it came
-from is not in this tree — see [What is here, what is not](#what-is-here-what-is-not).
+clone and run yourself — on your machine, with your own keys. The private console it came from is
+not in this tree — see [What is here, what is not](#what-is-here-what-is-not).
+
+## Two ways in
+
+### Just look — one click, no keys
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FExtremeAI-Labs%2Flookout&project-name=lookout&repository-name=lookout&env=LOOKOUT_DEMO,NEXT_PUBLIC_LOOKOUT_DEMO,NEXT_PUBLIC_CESIUM_CDN&envDescription=Set%20all%20three%20to%201%20for%20the%20read-only%20showcase&envLink=https%3A%2F%2Fgithub.com%2FExtremeAI-Labs%2Flookout%2Fblob%2Fmain%2FDEMO_MODE.md)
+
+Your own copy of the read-only hosted showcase — no keys, no account beyond Vercel's. It sets the
+three demo variables the button lists (`LOOKOUT_DEMO`, `NEXT_PUBLIC_LOOKOUT_DEMO`,
+`NEXT_PUBLIC_CESIUM_CDN`), all `1`, which puts it in the read-only showcase build: every non-GET
+request is refused, the private 2D console and every write- or key-bearing route 404, and the
+sample HISTORY recording scrubs instead of a real receiver. Which map layers call their live feed
+and which replay sealed sample data is decided per layer, not as a block, and can change — see
+[Demo mode](#demo-mode) below for the current, authoritative breakdown.
+
+Skip the button and deploy from your own fork without those three variables and you will hit a
+wall on purpose: the access guard 403s any request whose host isn't loopback or an explicitly
+configured public hostname behind Cloudflare Access (`src/lib/access-guard.ts`), so a bare deploy
+locks itself out rather than quietly exposing a console with no login.
+
+### Run it yourself — your own machine, your own keys
+
+Node 20+.
+
+```bash
+npm i
+npm run build      # its prebuild step stages CesiumJS's prebuilt bundle into public/vendor/cesium/
+npm start          # http://127.0.0.1:3000 → the theater
+```
+
+That is the whole install: keyless Esri imagery, live public feeds, the assistant off until you
+give it a key. Everything it writes goes under `~/.lookout` (`LOOKOUT_DATA_DIR` to move it).
+
+The server binds to loopback and refuses other hosts by design. To reach it from your phone on
+the same network set `LOOKOUT_ALLOW_LAN=1`; to publish it, put it behind Cloudflare Access and
+set the `LOOKOUT_PUBLIC_HOST` / `LOOKOUT_CF_*` variables (see `.env.example`) — the token is
+verified on every request, not trusted for being present.
 
 ## What it does
 
@@ -27,24 +63,6 @@ from is not in this tree — see [What is here, what is not](#what-is-here-what-
 | **Two skins** | Lookout's own gold identity (default) and the God's Eye shell as a named preset; **R** draws a 16:9 recording frame and blurs your private entries |
 
 Keyboard: **L** layers · **S** scenes · **H** history · **W** watchlist · **A** annotate · **K** contacts · **F** follow · **C** cockpit · **T** trace · **R** rec frame · **1–7** looks · arrows look, ⇧arrows move, +/− zoom · **Esc**.
-
-## Run it
-
-Node 20+.
-
-```bash
-npm i
-npm run build      # its prebuild step stages CesiumJS's prebuilt bundle into public/vendor/cesium/
-npm start          # http://127.0.0.1:3000 → the theater
-```
-
-That is the whole install: keyless Esri imagery, live public feeds, the assistant off until you
-give it a key. Everything it writes goes under `~/.lookout` (`LOOKOUT_DATA_DIR` to move it).
-
-The server binds to loopback and refuses other hosts by design. To reach it from your phone on
-the same network set `LOOKOUT_ALLOW_LAN=1`; to publish it, put it behind Cloudflare Access and
-set the `LOOKOUT_PUBLIC_HOST` / `LOOKOUT_CF_*` variables (see `.env.example`) — the token is
-verified on every request, not trusted for being present.
 
 ## Keys — all optional, each unlocks one thing
 
@@ -75,13 +93,23 @@ falls back to a cloud vision or search service you did not configure.
 
 ## Demo mode
 
-Not something you need. `LOOKOUT_DEMO=1 NEXT_PUBLIC_LOOKOUT_DEMO=1 npm run build` produces a
-read-only showcase build: the
-aircraft, satellite and earthquake layers read the synthetic samples under `public/sample-data/`,
-the HISTORY panel scrubs the sealed sample recording under `data/tracks/`, every non-GET request
-and every route that writes, calls a live feed or needs a key returns 404, and the assistant is
-off. `NEXT_PUBLIC_CESIUM_CDN=1` additionally loads the pinned Cesium build from Cesium's CDN so the
-host serves none of it. See [`DEMO_MODE.md`](./DEMO_MODE.md).
+Not something you need if you're running your own copy — this is what the Deploy button above
+sets up for you. `LOOKOUT_DEMO=1 NEXT_PUBLIC_LOOKOUT_DEMO=1 npm run build` produces a read-only
+showcase build: every non-GET request is refused, every route that writes or needs a key returns
+404 (ships/AIS, TRACE, watchlist, Scout, cases, the assistant), the HISTORY panel scrubs the
+sealed sample recording under `data/tracks/` instead of a real receiver, the recorder and the
+registry download never start. `NEXT_PUBLIC_CESIUM_CDN=1` additionally loads the pinned Cesium
+build from Cesium's CDN so the host serves none of it.
+
+Which map layers call their real feed in that showcase and which read the synthetic samples under
+`public/sample-data/` is a **per-layer** decision that follows each feed's terms and per-viewer
+cost. As of this revision: earthquakes (USGS), satellites (CelesTrak) and the public-camera
+catalogue are live, with their responses cached at the CDN edge (60 s to 7200 s) so a busy
+showcase never hammers USGS or trips CelesTrak's two-hour rule; aircraft and military traffic
+still replay the samples, because adsb.fi and OpenSky are non-commercial, one-request-per-second
+feeds a public multi-viewer site cannot honor without its own fan-out layer.
+[`DEMO_MODE.md`](./DEMO_MODE.md) is the single source of truth for the current breakdown; if this
+paragraph and that file ever disagree, that file is right.
 
 ## Data sources and their terms
 
